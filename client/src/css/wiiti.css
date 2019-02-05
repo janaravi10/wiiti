@@ -1,0 +1,18 @@
+.wiiti {
+    display: inline-block;
+    background-color: #8d8d8d;
+    padding: .5%;
+    margin: .5%;
+    height: auto;
+    width: 23%;
+}
+
+.query-image {
+    width: 96%;
+    padding: 1% 2%;
+    height: 250px;
+}
+
+.subtitle {
+    margin: 5px; padding: 5px;
+}
