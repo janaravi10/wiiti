@@ -1,0 +1,21 @@
+.answer {
+    border-top: 1px solid #e2e2e2;
+    margin-top: 5px;
+}
+
+.profile {
+    display: flex;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: rgb(231, 231, 231);
+}
+
+.user-logo {
+    width: 40px;
+    height: 40px;
+    margin-left: 0px;
+}
+
+.logo-wrapper {
+    margin-right: 10px;
+}
