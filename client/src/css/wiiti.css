@@ -1,10 +1,11 @@
 .wiiti {
     display: inline-block;
-    background-color: #8d8d8d;
+    background-color: #ffffff;
     padding: .5%;
     margin: .5%;
     height: auto;
     width: 23%;
+    border-radius: 5px;
 }
 
 .query-image {
@@ -14,5 +15,11 @@
 }
 
 .subtitle {
-    margin: 5px; padding: 5px;
+    margin: 5px;
+    padding: 5px;
+}
+
+.wiiti-link {
+    text-decoration: none;
+    color: #5d5d5d;
 }
