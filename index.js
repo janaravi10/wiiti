@@ -8,7 +8,7 @@ const corsOption = {
 app.use(cors(corsOption));
 app.use(bodyParser.json());
 app.use("/images", express.static("images"));
-require("./routes/userRoute")(app);
+require("./routes/userRoute")(app)
 require("./routes/postRoute")(app);
 
 const port = process.env.PORT || 5000;
