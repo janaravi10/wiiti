@@ -6,9 +6,9 @@ class Wiitis extends Component {
         postList: []
     }
     componentDidMount() {
+        // getting the data from api
         axios.get("http://localhost:5000/api/wiitis")
             .then(res => {
-          
                 if (res.data.length) {
                     this.setState({ postList: res.data });
                 }else{
@@ -20,7 +20,7 @@ class Wiitis extends Component {
         return (
             <div className="wrapper">
                 {this.state.postList.map(post => {
-                    console.log(post);
+                    //looping through the data
                     return <Wiiti postId={post.postId} imgSrc={post.imgSrc} title={post.title}></Wiiti>
                 })}
             </div>
