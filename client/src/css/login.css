@@ -1,0 +1,48 @@
+.login-modal {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 100vh;
+    width: 100vw;
+    background-color: #20cfffc2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-form {
+    width: 25%;
+    height: 25%;
+    background-color: #ffffff;
+    box-shadow: 2px 2px 3px 1px rgba(194, 194, 194, 1);
+    display: flex;
+    flex-direction: column;
+    border-radius: 3px;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.input-text {
+    all: unset;
+    margin: 10px;
+    width: 75%;
+    height: 15%;
+    padding: 5px;
+    background-color: #d1d1d1;
+}
+
+.input-text:focus {
+    background-color: #b8b8b8;
+}
+
+.login-btn {
+    all: unset;
+    background-color: #20cfffc2;
+    padding: 1.5% 5%;
+    border-radius: 3px;
+}
+
+.questioner {
+    color: #b8b8b8;
+}
