@@ -1,6 +1,9 @@
 const userModel = require("../models/userModel"),
   bcrypt = require("bcrypt");
 module.exports = app => {
+  app.get("/api/test", verifySession, (req, res) => {
+    res.send({ success: true, error: "came here!" });
+  });
   /*
    * route for user to signup for the account
    */
@@ -65,7 +68,11 @@ module.exports = app => {
               .compare(password, doc[0].password)
               .then(compareResult => {
                 if (compareResult) {
-                  res.json({ success: true, error: "You are logged in!" });
+                  req.session.email = email;
+                  res.json({
+                    success: true,
+                    error: "User logged in!"
+                  });
                 } else {
                   res.json({
                     success: false,
@@ -81,4 +88,29 @@ module.exports = app => {
       res.json({ success: false, error: "No data has been providedsdf" });
     }
   });
+  /*
+   * route for logging out the user from the session
+   */
+  app.get("/api/logout", (req, res) => {
+    if (req.session.email) {
+      req.session.destroy(err => {
+        if (err) {
+          res.send({ success: false, error: "Can't logout" });
+        } else {
+          res.send({ success: true, error: "None ,user logged out" });
+        }
+      });
+    } else {
+      res.send({ success: false, error: "You are already logged out" });
+    }
+  });
+  // verify the session
+  function verifySession(req, res, next) {
+    let session = req.session;
+    if (session.email) {
+      next();
+    } else {
+      res.status(401).json({ success: false, error: "Unauthorized user!" });
+    }
+  }
 };
