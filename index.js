@@ -4,7 +4,8 @@ const express = require("express"),
   app = express(),
   cors = require("cors"),
   corsOption = {
-    origin: "http://localhost:3000"
+    origin: "http://localhost:3000",
+    credentials: true
   },
   cookieParser = require("cookie-parser"),
   port = process.env.PORT || 5000,
