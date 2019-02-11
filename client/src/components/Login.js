@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import "./../css/login.css";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { connect } from "react-redux";
+import { loginActionCreator } from "../actions/loginAction";
 class Login extends Component {
   /*
    * using the same component for sign up and login form
@@ -11,9 +14,40 @@ class Login extends Component {
     this.state = {
       whatItis: this.props.reason == "LOGIN" ? "LOGIN" : "SIGNUP",
       LOGIN: { submitBtn: "Login" },
-      SIGNUP: { submitBtn: "Sign up" }
+      SIGNUP: { submitBtn: "Sign up" },
+      email: "",
+      password: ""
     };
   }
+  // handling the input changes and updating the state;
+  handleChange = e => {
+    let elem = e.target;
+    this.setState({ [elem.name]: elem.value });
+  };
+
+  // handle form submit;
+  handleFormSubmit = e => {
+    e.preventDefault();
+    let { email, password } = this.state;
+    if (email && password && password.length >= 8) {
+      if (e.target.name === "LOGIN") {
+        console.log("coomming ing")
+        this.props.logInUser(email, password);
+      } else if (e.target.name === "SIGNUP") {
+        axios
+          .post("http://localhost:5000/api/signup", {
+            email: this.state.email,
+            password: this.state.password
+          })
+          .then(res => {
+            console.log(res);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  };
 
   render() {
     const { whatItis } = this.state;
@@ -25,18 +59,27 @@ class Login extends Component {
     }
     return (
       <div className="login-modal">
-        <form action="" className="login-form">
+        <form
+          action=""
+          className="login-form"
+          onSubmit={this.handleFormSubmit}
+          name={this.state.whatItis}
+        >
           <input
             type="text"
-            name="username"
+            name="email"
             className="input-text"
             placeholder="email or username"
+            onChange={this.handleChange}
+            value={this.state.email}
           />
           <input
             type="password"
             name="password"
             className="input-text"
             placeholder="password"
+            onChange={this.handleChange}
+            value={this.state.password}
           />
           <input
             type="submit"
@@ -59,5 +102,15 @@ class Login extends Component {
     );
   }
 }
-
-export default Login;
+const mapStateToProps = state => {
+  return {
+    loggedIn: state.user.loggedIn
+  };
+};
+const mapDispatchToProps = {
+    logInUser: loginActionCreator
+  };
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login);
