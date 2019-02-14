@@ -11,7 +11,14 @@ const express = require("express"),
   port = process.env.PORT || 5000,
   secret = process.env.PRIVATE_KEY_NODE;
 app.use(cookieParser());
-app.use(session({ secret, resave: false, saveUninitialized: false }));
+app.use(
+  session({
+    secret,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 60000 * 60 * 24 * 7  }
+  })
+);
 app.use(cors(corsOption));
 app.use(bodyParser.json());
 app.use("/images", express.static("images"));
