@@ -1,8 +1,8 @@
 const userModel = require("../models/userModel"),
   bcrypt = require("bcrypt");
 module.exports = app => {
-  app.get("/api/test", verifySession, (req, res) => {
-    res.send({ success: true, error: "came here!" });
+  app.get("/api/authed", verifySession, (req, res) => {
+    res.send({ success: true, error: "You are logged  in !" });
   });
   /*
    * route for user to signup for the account
@@ -27,7 +27,7 @@ module.exports = app => {
           userDocument
             .save()
             .then(savedDoc => {
-              console.log(savedDoc);
+              req.session.email = email;
               res.json({ success: true, error: "user created" });
             })
             .catch(err => {
@@ -91,17 +91,17 @@ module.exports = app => {
   /*
    * route for logging out the user from the session
    */
-  app.get("/api/logout", (req, res) => {
+  app.delete("/api/logout", (req, res) => {
     if (req.session.email) {
       req.session.destroy(err => {
         if (err) {
           res.send({ success: false, error: "Can't logout" });
         } else {
-          res.send({ success: true, error: "None ,user logged out" });
+          res.send({ success: true, error: "user logged out" });
         }
       });
     } else {
-      res.send({ success: false, error: "You are already logged out" });
+      res.send({ success: true, error: "You are already logged out" });
     }
   });
   // verify the session
