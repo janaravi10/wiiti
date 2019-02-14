@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import "./../css/login.css";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import { connect } from "react-redux";
-import { loginActionCreator } from "../actions/loginAction";
+import { loginActionCreator, signUpAction } from "../actions/loginAction";
 class Login extends Component {
   /*
    * using the same component for sign up and login form
@@ -12,7 +11,7 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      whatItis: this.props.reason == "LOGIN" ? "LOGIN" : "SIGNUP",
+      whatItis: this.props.reason === "LOGIN" ? "LOGIN" : "SIGNUP",
       LOGIN: { submitBtn: "Login" },
       SIGNUP: { submitBtn: "Sign up" },
       email: "",
@@ -31,20 +30,10 @@ class Login extends Component {
     let { email, password } = this.state;
     if (email && password && password.length >= 8) {
       if (e.target.name === "LOGIN") {
-        console.log("coomming ing")
-        this.props.logInUser(email, password);
+        //  user is verified;
+        this.props.logInUser(email, password, this.props.history);
       } else if (e.target.name === "SIGNUP") {
-        axios
-          .post("http://localhost:5000/api/signup", {
-            email: this.state.email,
-            password: this.state.password
-          })
-          .then(res => {
-            console.log(res);
-          })
-          .catch(err => {
-            console.log(err);
-          });
+        this.props.signUp(email, password, this.props.history);
       }
     }
   };
@@ -108,8 +97,10 @@ const mapStateToProps = state => {
   };
 };
 const mapDispatchToProps = {
-    logInUser: loginActionCreator
-  };
+  logInUser: loginActionCreator,
+  signUp: signUpAction
+};
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps
