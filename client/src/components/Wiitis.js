@@ -21,7 +21,7 @@ class Wiitis extends Component {
             <div className="wrapper">
                 {this.state.postList.map(post => {
                     //looping through the data
-                    return <Wiiti postId={post.postId} imgSrc={post.imgSrc} title={post.title}></Wiiti>
+                    return <Wiiti postId={post.postId} key={post.postId} imgSrc={post.imgSrc} title={post.title}></Wiiti>
                 })}
             </div>
         )
