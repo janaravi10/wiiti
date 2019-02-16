@@ -8,6 +8,7 @@ import Post from "./components/Post";
 import "./App.css";
 import { Route } from "react-router-dom";
 import Login from "./components/Login";
+import AskImage from "./components/AskImage";
 class App extends Component {
   componentDidMount() {
     this.props.authUser();
@@ -17,6 +18,7 @@ class App extends Component {
     return (
       <div className="App">
         <Header />
+        <Route path="/ask-question" component={AskImage}/>
         <Route exact path="/" component={Wiitis} />
         <Route path="/post/:id" component={Post} />
         <Route
