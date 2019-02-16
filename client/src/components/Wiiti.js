@@ -8,7 +8,7 @@ class Wiiti extends Component {
           <div className="wiiti">
                 <Link to={"/post/" + this.props.postId} className="wiiti-link">
               <img
-                src={"http://localhost:5000/" + this.props.imgSrc}
+                src={this.props.imgSrc}
                 alt=""
                 className="query-image"
               />
