@@ -20,28 +20,38 @@ class Header extends Component {
     return (
       <header>
         <div className="brand-container">
-          <img className="brand-logo" src={brandLogo} alt="Brand logo" />
+          <Link to="/">
+            <img className="brand-logo" src={brandLogo} alt="Brand logo" />
+          </Link>
         </div>
-        <div className="header-profile">
-          {this.props.loggedIn ? (
-            <img src={profileLogo} className="profile-logo" alt="" />
-          ) : (
-            <Link to="/login" className="loginBtn">
-              Login
+        <div className="aside-header">
+          <div className="post-question">
+            <Link className="ask-question btn-blue-white" to="/ask-question">
+              {" "}
+              Ask about image
             </Link>
-          )}
-          {this.props.loggedIn ? (
-            <ul className="dropdown-user">
-              <li>{this.props.email}</li>
-              <li>
-                <span className="logout" onClick={this.logout}>
-                  Logout
-                </span>
-              </li>
-            </ul>
-          ) : (
-            ""
-          )}
+          </div>
+          <div className="header-profile">
+            {this.props.loggedIn ? (
+              <img src={profileLogo} className="profile-logo" alt="" />
+            ) : (
+              <Link to="/login" className="loginBtn">
+                Login
+              </Link>
+            )}
+            {this.props.loggedIn ? (
+              <ul className="dropdown-user">
+                <li>{this.props.email}</li>
+                <li>
+                  <span className="logout" onClick={this.logout}>
+                    Logout
+                  </span>
+                </li>
+              </ul>
+            ) : (
+              ""
+            )}
+          </div>
         </div>
       </header>
     );
