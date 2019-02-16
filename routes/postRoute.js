@@ -1,18 +1,18 @@
+let questionModel = require("../models/questionModel"),
+  NUM_QUESTION_COUNT = 5;
 module.exports = app => {
-/*
- * Route for getting all posts
- */
-    app.get("/api/wiitis", (req, res) => {
-        res.send([
-            { postId: 1, title: "lorem ipsum kdls", imgSrc: "images/wiiti-image.jpg" },
-            {
-                postId: 2,
-                title: "waht is this image",
-                imgSrc: "images/wiiti-image.jpg"
-            },
-            { postId: 3, title: "lorem ipsum kdls", imgSrc: "images/wiiti-image.jpg" },
-            { postId: 4, title: "lorem ipsum kdls", imgSrc: "images/wiiti-image.jpg" },
-            { postId: 5, title: "lorem ipsum kdls", imgSrc: "images/wiiti-image.jpg" }
-        ]);
-    });
+  /*
+   * Route for getting all posts
+   */
+  app.get("/api/wiitis", (req, res) => {
+    questionModel
+      .find({}) 
+      .limit(NUM_QUESTION_COUNT) // limiting the number of document returned;
+      .exec(function(err, wiitis) {
+        if (!err) {
+          // sending whole document to the user;
+          res.json(wiitis);
+        }
+      });
+  });
 };
