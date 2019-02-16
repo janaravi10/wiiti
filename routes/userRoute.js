@@ -1,7 +1,11 @@
 const userModel = require("../models/userModel"),
-  bcrypt = require("bcrypt");
+  logoutModel = require("../models/logoutModel"),
+  bcrypt = require("bcrypt"),
+  jwt = require("jsonwebtoken"),
+  verifyToken = require("../util/jwtVerify");
+secret = process.env.PRIVATE_KEY_NODE;
 module.exports = app => {
-  app.get("/api/authed", verifySession, (req, res) => {
+  app.get("/api/authed", verifyToken, (req, res) => {
     res.send({ success: true, error: "You are logged  in !" });
   });
   /*
@@ -10,38 +14,60 @@ module.exports = app => {
   app.post("/api/signup", (req, res) => {
     //getting the body
     const body = req.body;
+    console.log(body)
     let userDocument,
       { password, email } = body;
     // checking if the user has enter the email and password with the request
     if (email && password) {
-      // hashing the password with bcrypt
-      bcrypt
-        .hash(password, 10)
-        .then(hashedData => {
-          // getting the hashed data
-          userDocument = new userModel({
-            email,
-            password: hashedData
+      userModel.findOne({ email }, function(err, obj) {
+        if (err) {
+          res.json({ success: false, error: "Internal server error" });
+          return;
+        }
+        if (obj) {
+          res.json({
+            success: false,
+            error: "Email address already registered!"
           });
-          //saving the data to database
-          userDocument
-            .save()
-            .then(savedDoc => {
-              req.session.email = email;
-              res.json({ success: true, error: "user created" });
+        } else {
+          // hashing the password with bcrypt
+          bcrypt
+            .hash(password, 10)
+            .then(hashedData => {
+              // getting the hashed data
+              userDocument = new userModel({
+                email,
+                password: hashedData
+              });
+              //saving the data to database
+              userDocument
+                .save()
+                .then(savedDoc => {
+                  jwt.sign({ id: savedDoc._id }, secret, { expiresIn: 60 * 60 * 24 * 7 }, function(
+                    err,
+                    token
+                  ) {
+                    if (!err) {
+                      res.json({
+                        success: true,
+                        error: "User created",
+                        token
+                      });
+                    }
+                  });
+                })
+                .catch(err => {
+                  res.json({ success: false, error: "Internel server error!" });
+                });
             })
             .catch(err => {
-              console.log(err);
-              res.json({ success: false, error: "Internel server error!" });
+              if (err) {
+                res.json({ success: false, error: "Internal server error" });
+                return;
+              }
             });
-        })
-        .catch(err => {
-          if (err) {
-            console.log(err);
-            res.json({ success: false, error: "Internal server error" });
-            return;
-          }
-        });
+        }
+      });
     } else {
       res.json({ success: false, error: "No data has been providedsdf" });
     }
@@ -62,16 +88,23 @@ module.exports = app => {
             res.json({ success: false, error: "No user available" });
           } else {
             /*
-             * comparing the password with the has
+             * comparing the password with the hash
              */
             bcrypt
               .compare(password, doc[0].password)
               .then(compareResult => {
                 if (compareResult) {
-                  req.session.email = email;
-                  res.json({
-                    success: true,
-                    error: "User logged in!"
+                  jwt.sign({ email, id: doc[0]._id }, secret, { expiresIn: 60 * 60 * 24 * 7}, function(
+                    err,
+                    token
+                  ) {
+                    if (!err) {
+                      res.json({
+                        success: true,
+                        error: "User logged in!",
+                        token
+                      });
+                    }
                   });
                 } else {
                   res.json({
@@ -91,26 +124,23 @@ module.exports = app => {
   /*
    * route for logging out the user from the session
    */
-  app.delete("/api/logout", (req, res) => {
-    if (req.session.email) {
-      req.session.destroy(err => {
-        if (err) {
-          res.send({ success: false, error: "Can't logout" });
-        } else {
-          res.send({ success: true, error: "user logged out" });
-        }
-      });
-    } else {
-      res.send({ success: true, error: "You are already logged out" });
+  app.get("/api/logout", (req, res) => {
+    const bearer = req.headers.authorization;
+    if (bearer) {
+      const token = bearer.split(" ")[1];
+      let logoutDocument = new logoutModel({ token });
+      //saving the token to database
+      logoutDocument
+        .save()
+        .then(savedDoc => {
+          res.json({ success: true,statusCode: 200, error: "User logged out!" });
+        })
+        .catch(err => {
+          console.log(err);
+          res.json({ success: false, error: "Internel server error!" });
+        });
+    }else{
+      res.json({ success: false,statusCode: 401, error: "Token not provided" });
     }
   });
-  // verify the session
-  function verifySession(req, res, next) {
-    let session = req.session;
-    if (session.email) {
-      next();
-    } else {
-      res.status(401).json({ success: false, error: "Unauthorized user!" });
-    }
-  }
 };
