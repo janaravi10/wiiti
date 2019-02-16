@@ -17,10 +17,12 @@ export function loginActionCreator(email, password, history) {
         if (res.data.success) {
           history.push("/");
           // setlocalstore
+          localStorage.setItem("token", res.data.token);
           localStorage.setItem("userEmail", email);
+          console.log(res.data.token);
           return dispatch({
             type: LOGGED_IN,
-            payload: { loggedIn: true, email }
+            payload: { loggedIn: true, email, token: res.data.token }
           });
         } else {
           return dispatch({
@@ -44,34 +46,47 @@ export function loginActionCreator(email, password, history) {
 export function logoutAction(history) {
   return dispatch => {
     const logoutUrl = "http://localhost:5000/api/logout";
-    axios.delete(logoutUrl).then(res => {
-      if (res.data.success) {
-        history.push("/");
-        // remove email address from local storage
-        localStorage.removeItem("userEmail");
-        //dispatch the event handler
-        return dispatch({
-          type: LOG_OUT,
-          payload: { loggedIn: false }
-        });
-      }
-    });
+    const bearer = localStorage.getItem("token");
+    axios
+      .get(logoutUrl, {
+        headers: {
+          authorization: "bearer " + bearer
+        }
+      })
+      .then(res => {
+        if (res.data.success) {
+          history.push("/");
+          // remove email address from local storage
+          localStorage.removeItem("userEmail");
+          // remove token from localstorage
+          localStorage.removeItem("token");
+          //dispatch the event handler
+          return dispatch({
+            type: LOG_OUT,
+            payload: { loggedIn: false }
+          });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 }
 
 export function signUpAction(email, password, history) {
   return dispatch => {
-    const loginUrl = "http://localhost:5000/api/login";
+    const loginUrl = "http://localhost:5000/api/signup";
     axios
       .post(loginUrl, { email, password }, { withCredentials: true })
       .then(res => {
         if (res.data.success) {
           history.push("/");
+          localStorage.setItem("token", res.data.token);
           // setlocalstore
           localStorage.setItem("userEmail", email);
           return dispatch({
             type: SIGN_UP,
-            payload: { loggedIn: true, email }
+            payload: { loggedIn: true, email, token: res.data.token }
           });
         } else {
           return dispatch({
@@ -93,18 +108,24 @@ export function authSessAction() {
   return dispatch => {
     // authenticating the user session
     const authUrl = "http://localhost:5000/api/authed";
+    const bearer = localStorage.getItem("token");
     axios
-      .get(authUrl, { withCredentials: true })
+      .get(authUrl, {
+        withCredentials: true,
+        headers: {
+          authorization: "bearer " + bearer
+        }
+      })
       .then(res => {
         if (res.data.success) {
           return dispatch({
-            type: LOGGED_OUT,
-            payload: { loggedIn: false }
+            type: LOGGED_IN,
+            payload: { loggedIn: true }
           });
         } else {
           return dispatch({
             type: LOGGED_IN,
-            payload: { loggedIn: true }
+            payload: { loggedIn: false }
           });
         }
       })
