@@ -1,0 +1,153 @@
+.question-overlay {
+    min-height: 500px;
+    width: 100%;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.question-modal {
+    margin: 15px;
+    padding-bottom: 10px;
+    position: relative;
+    flex-basis: 50%;
+    background-color: #ffffff;
+    height: auto;
+    border-radius: 5px;
+}
+
+.question-form {
+    display: flex;
+    flex-direction: column;
+}
+
+h3.question-modal-title {
+    margin: 0px;
+    text-align: center;
+    padding: 10px;
+    color: #ffffff;
+    background-color: #20cdff;
+    border-radius: 5px 5px 0 0;
+}
+
+.input-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 10px;
+}
+
+.error-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.error-content {
+    display: inline-block;
+    width: auto;
+    border: 5px solid rgb(255, 255, 255);
+    text-align: center;
+    margin: 0px;
+    border-radius: 3px;
+    color: #f00;
+    padding: 5px;
+    background-color: rgb(226, 226, 226);
+}
+
+/* css for custom file upload btn */
+
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.btn {
+    border: 2px solid gray;
+    color: gray;
+    background-color: white;
+    padding: 6px 15px;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.upload-btn-wrapper input[type=file] {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+}
+
+/* css for custom file ends here */
+
+.image-container {
+    align-self: center;
+    width: 80%;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 5px;
+}
+
+.image-holder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    position: relative;
+}
+
+.input-image {
+    display: block;
+    height: 60px;
+    width: 60px;
+}
+
+.img-name {
+    font-size: 14px;
+    word-wrap: break-word;
+    width: 100px;
+}
+
+.del-uploaded-img {
+    padding: 0 5px 2px 5px;
+    background: #20cdff;
+    position: absolute;
+    right: 5px;
+    top: -5px;
+    cursor: pointer;
+}
+
+.post-title-wrapper {
+    border-top: 1px solid #d3d3d3;
+    width: 80%;
+    align-self: center;
+}
+
+input.title-input {
+    all: unset;
+    display: inline-block;
+    width: 100%;
+    height: 40px;
+    margin: auto;
+    padding-left: 10px;
+    font-size: 20px;
+}
+
+.submit-post {
+    all: unset;
+    width: 20%;
+    display: block;
+    color: #fff;
+    background-color: #20cdff;
+    padding: 5px;
+    border-radius: 3px;
+    box-shadow: 2px 2px 5px 0px rgb(119, 119, 119);
+    cursor: pointer;
+    align-self: center;
+    text-align: center;
+}
