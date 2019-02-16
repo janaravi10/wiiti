@@ -1,5 +1,4 @@
 const express = require("express"),
-  session = require("express-session"),
   bodyParser = require("body-parser"),
   app = express(),
   cors = require("cors"),
@@ -8,20 +7,13 @@ const express = require("express"),
     credentials: true
   },
   cookieParser = require("cookie-parser"),
-  port = process.env.PORT || 5000,
-  secret = process.env.PRIVATE_KEY_NODE;
+  port = process.env.PORT || 5000;
 app.use(cookieParser());
-app.use(
-  session({
-    secret,
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 60000 * 60 * 24 * 7  }
-  })
-);
 app.use(cors(corsOption));
 app.use(bodyParser.json());
 app.use("/images", express.static("images"));
+app.use("/uploads", express.static("uploads"));
 require("./routes/userRoute")(app);
 require("./routes/postRoute")(app);
+require("./routes/askQuestionRoute")(app);
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
