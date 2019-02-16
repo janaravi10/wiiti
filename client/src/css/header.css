@@ -1,12 +1,11 @@
 header {
+    z-index: 999;
     position: relative;
     display: flex;
     margin: 0;
     height: 50px;
     width: 100%;
     background: #ffffff;
-    -webkit-box-shadow: 0px 2px 5px 1px rgba(214, 214, 214, 1);
-    -moz-box-shadow: 0px 2px 5px 1px rgba(214, 214, 214, 1);
     box-shadow: 0px 2px 5px 1px rgba(214, 214, 214, 1);
     margin-bottom: 5px;
     justify-content: space-between;
@@ -52,4 +51,21 @@ header {
 .loginBtn {
     padding: 5px;
     text-decoration: none;
+}
+
+.aside-header {
+    flex-basis: 15%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+button.ask-question, .btn-blue-white {
+    all: unset;
+    color: #fff;
+    background-color: #20cdff;
+    padding: 5px;
+    border-radius: 3px;
+    box-shadow: 2px 2px 5px 0px rgb(119, 119, 119);
+    cursor: pointer;
 }
