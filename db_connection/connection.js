@@ -1,21 +1,23 @@
-const mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost:27017/user", { useNewUrlParser: true });
-// callback function to get the connection status
-mongoose.connection.on("connected", function() {
-  console.log("Mongoose default connection is open to ");
+const PromiseBlue = require("bluebird"),
+  mysql = require("mysql");
+
+const connection = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "wiiti"
 });
-// callback function to get the connection error status
-mongoose.connection.on("error", function(err) {
-    console.log("Mongoose default connection has occured " + err + " error");
+
+connection.connect(function(err) {
+  if (err) {
+    console.error("error connecting: " + err.stack);
+    return;
+  }
 });
 
 // callback function to close the database connection
 process.on("SIGINT", function() {
-    mongoose.connection.close(function() {
-        console.log(
-      "Mongoose default connection is disconnected due to application termination"
-    );
-    process.exit(0);
-  });
+  connection.end();
+  process.exit(0);
 });
-module.exports = mongoose;
+module.exports = PromiseBlue.promisifyAll(connection);
