@@ -1,3 +1,49 @@
 body {
     background-color: #f3f3f3;
 }
+
+.error-modal {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #ffffff;
+    padding: 10px;
+    border-left: 4px solid #20cdff;
+    box-shadow: 2px 0px 5px 0px rgb(175, 175, 175);
+    animation: modalError .5s ease-in-out  1;
+}
+
+.error-modal p {
+    margin: 0;
+    float: left;
+}
+
+.close-error {
+    margin-left: 20px;
+    float: right;
+    height: 25px;
+    width: 25px;
+    /* background-color: #FA6900; */
+    border-radius: 5px;
+    position: relative;
+}
+
+.close-error:after {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    content: "\274c";
+    color: rgb(255, 25, 25);
+    text-align: center;
+}
+
+@keyframes modalError {
+    from {
+        right: -500px;
+    }
+    to {
+        right: 20px;
+    }
+}
