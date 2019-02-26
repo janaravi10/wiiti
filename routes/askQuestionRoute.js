@@ -1,10 +1,9 @@
 let multer = require("multer"),
   path = require("path"),
   fs = require("fs"),
-  questionModel = require("../models/questionModel"),
   baseUploadLocation = "http://www.localhost:5000/uploads/",
   verifyToken = require("../util/jwtVerify");
-module.exports = app => {
+module.exports = (app, db) => {
   /*
    * Storage area
    */
@@ -89,27 +88,28 @@ module.exports = app => {
   ) {
     let questionData = {
         questionTitle: req.body.questionTitle,
-        imgUrls: [],
-        authorId: req.userId
+        imgUrls: "",
+        autherId: req.userId
       },
-      questionDoc;
+      imgUrls = [];
     // looping through the uploaded files and finding the filenames
     req.files.forEach(file => {
-      questionData.imgUrls.push(baseUploadLocation + file.filename);
+      imgUrls.push(baseUploadLocation + file.filename);
     });
-    questionDoc = new questionModel(questionData);
+    questionData.imgUrls = JSON.stringify(imgUrls);
+    console.log(questionData)
+    let sql = "INSERT INTO questions SET ?";
     // saving the data to the mongodb database;
-    questionDoc
-      .save()
-      .then(function(savedQuestion) {
-        // sending the response
+    db.query(sql, questionData, function(err, result) {
+      // sending the response
+      if (!err) {
         res.send({
           success: true,
-          error: "Question uploaded Successfully!",
+          error: "Question uploaded Successfully!"
         });
-      })
-      .catch(function(err) {
-        console.log(err);
-      });
+      } else {
+        res.send({ success: false, error: err.code });
+      }
+    });
   });
 };
