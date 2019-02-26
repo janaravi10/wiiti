@@ -5,7 +5,8 @@ import {
   SIGN_UP,
   LOG_OUT,
   GET_EMAIL_FROM_STORAGE,
-  LOGGED_OUT
+  USER_DATA,
+  GET_TOKEN
 } from "./actionTypes";
 import axios from "axios";
 export function loginActionCreator(email, password, history) {
@@ -17,12 +18,22 @@ export function loginActionCreator(email, password, history) {
         if (res.data.success) {
           history.push("/");
           // setlocalstore
-          localStorage.setItem("token", res.data.token);
-          localStorage.setItem("userEmail", email);
-          console.log(res.data.token);
+          localStorage.setItem(
+            "userData",
+            JSON.stringify({
+              email,
+              token: res.data.token,
+              userId: res.data.userId
+            })
+          );
           return dispatch({
             type: LOGGED_IN,
-            payload: { loggedIn: true, email, token: res.data.token }
+            payload: {
+              loggedIn: true,
+              email,
+              token: res.data.token,
+              userId: res.data.userId
+            }
           });
         } else {
           return dispatch({
@@ -57,10 +68,7 @@ export function logoutAction(history) {
         if (res.data.success) {
           history.push("/");
           // remove email address from local storage
-          localStorage.removeItem("userEmail");
-          // remove token from localstorage
-          localStorage.removeItem("token");
-          //dispatch the event handler
+          localStorage.removeItem("userData");
           return dispatch({
             type: LOG_OUT,
             payload: { loggedIn: false }
@@ -81,12 +89,22 @@ export function signUpAction(email, password, history) {
       .then(res => {
         if (res.data.success) {
           history.push("/");
-          localStorage.setItem("token", res.data.token);
-          // setlocalstore
-          localStorage.setItem("userEmail", email);
+          localStorage.setItem(
+            "userData",
+            JSON.stringify({
+              email,
+              token: res.data.token,
+              userId: res.data.userId
+            })
+          );
           return dispatch({
             type: SIGN_UP,
-            payload: { loggedIn: true, email, token: res.data.token }
+            payload: {
+              loggedIn: true,
+              email,
+              token: res.data.token,
+              userId: res.data.userId
+            }
           });
         } else {
           return dispatch({
@@ -108,7 +126,18 @@ export function authSessAction() {
   return dispatch => {
     // authenticating the user session
     const authUrl = "http://localhost:5000/api/authed";
-    const bearer = localStorage.getItem("token");
+    const data = localStorage.getItem("token")
+      ? JSON.parse(localStorage.getItem("userData"))
+      : null;
+    let bearer;
+    if (data) {
+      bearer = data.token;
+    } else {
+      return dispatch({
+        type: LOGGED_IN,
+        payload: { loggedIn: false }
+      });
+    }
     axios
       .get(authUrl, {
         withCredentials: true,
@@ -120,7 +149,7 @@ export function authSessAction() {
         if (res.data.success) {
           return dispatch({
             type: LOGGED_IN,
-            payload: { loggedIn: true }
+            payload: { loggedIn: true, userId: res.data.userId }
           });
         } else {
           return dispatch({
@@ -135,13 +164,11 @@ export function authSessAction() {
   };
 }
 
-export function getEmail() {
+export function getUserData() {
   return dispatch => {
-    // getting the email address from localstorage
-    const email = localStorage.getItem("userEmail");
-    return dispatch({
-      type: GET_EMAIL_FROM_STORAGE,
-      payload: { email }
-    });
+    const data = JSON.parse(localStorage.getItem("userData"));
+    if (data) {
+      return dispatch({ type: USER_DATA, payload: data });
+    }
   };
 }
