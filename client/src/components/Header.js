@@ -4,14 +4,10 @@ import "../css/header.css";
 import brandLogo from "../img/logoBlue.png";
 import profileLogo from "../img/profileLogo.png";
 import { Link } from "react-router-dom";
-import { getEmail, logoutAction } from "../actions/loginAction";
+import {  logoutAction } from "../actions/loginAction";
 import { createBrowserHistory } from "history";
 
 class Header extends Component {
-  componentDidMount() {
-    // getting the email from storage
-    this.props.getEmail();
-  }
   logout = () => {
     const history = createBrowserHistory();
     this.props.logoutUser(history);
@@ -40,6 +36,9 @@ class Header extends Component {
               </Link>
             )}
             {this.props.loggedIn ? (
+              <React.Fragment>
+              <div className="notch"></div>
+              <div className="overlay-background"></div>
               <ul className="dropdown-user">
                 <li>{this.props.email}</li>
                 <li>
@@ -48,6 +47,7 @@ class Header extends Component {
                   </span>
                 </li>
               </ul>
+              </React.Fragment>
             ) : (
               ""
             )}
@@ -64,7 +64,6 @@ const mapStateToProps = state => {
   };
 };
 const mapDispatchToProps = {
-  getEmail,
   logoutUser: logoutAction
 };
 export default connect(
