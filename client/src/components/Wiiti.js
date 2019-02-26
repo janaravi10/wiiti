@@ -6,7 +6,7 @@ class Wiiti extends Component {
         console.log(this.props);
         return (
           <div className="wiiti">
-                <Link to={"/post/" + this.props.postId} className="wiiti-link">
+                <Link to={"/question/" + this.props.postId} className="wiiti-link">
               <img
                 src={this.props.imgSrc}
                 alt=""
