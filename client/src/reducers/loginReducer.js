@@ -5,7 +5,7 @@ import {
   SIGN_UP,
   GET_EMAIL_FROM_STORAGE,
   LOG_OUT,
-  LOGGED_OUT
+  LOGGED_OUT, USER_DATA
 } from "../actions/actionTypes";
 export function logIn(initialState = { loggedIn: false }, action) {
   switch (action.type) {
@@ -22,6 +22,8 @@ export function logIn(initialState = { loggedIn: false }, action) {
     case LOG_OUT:
       return Object.assign({}, initialState, action.payload);
     case LOGGED_OUT:
+      return Object.assign({}, initialState, action.payload);
+    case USER_DATA:
       return Object.assign({}, initialState, action.payload);
     default:
       return initialState;
