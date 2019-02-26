@@ -27,26 +27,81 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
+    align-self: stretch;
+    cursor: pointer;
 }
 
 .header-profile:hover>.dropdown-user {
+    display: block;
+    animation: fadeIn .3s;
+}
+
+.header-profile:hover>.notch {
+    display: block;
+    animation: fadeIn .3s;
+}
+
+.header-profile:hover>.overlay-background {
     display: block;
 }
 
 .dropdown-user {
     display: none;
-    background: #20cdff;
-    bottom: -62px;
+    background: #ffffff;
+    bottom: -73px;
     padding: 0px;
+    border-radius: 3px;
     margin: 0;
-    right: 0;
+    right: 5px;
     position: absolute;
     list-style: none;
 }
 
-.dropdown-user>li {
-    padding: 5px;
+.notch {
+    display: none;
+    z-index: 0;
+    bottom: -24px;
+    position: absolute;
+    transform: rotateZ(45deg);
+    background-color: #fff;
+    width: 20px;
+    height: 20px;
 }
+
+.overlay-background {
+    display: none;
+    z-index: 0;
+    bottom: -20px;
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: transparent;
+}
+
+.dropdown-user>li {
+    font-size: 16px;
+    transition: all .5s;
+    color: #5d5d5d;
+    padding: 5px 30px;
+    cursor: default;
+}
+
+.dropdown-user>li:hover {
+    color: #20cdff;
+}
+
+/* animation for drop down */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* animation end */
 
 .loginBtn {
     padding: 5px;
