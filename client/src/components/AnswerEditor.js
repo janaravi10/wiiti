@@ -35,20 +35,18 @@ class AnswerEditor extends Component {
   handleAnswerSubmit = () => {
     let delta = this.state.delta;
     if (delta.ops.length) {
-      this.props.postAnswer(
-        this.props.questionId,
-        delta,
-        this.props.token
-      );
+      this.props.postAnswer(this.props.questionId, delta, this.props.token);
     }
   };
   render() {
     return (
       <React.Fragment>
-        <div id="editor" />
-        <button onClick={this.handleAnswerSubmit} className="btn-blue-white">
-          submit
-        </button>
+        <div>
+          <div id="editor" />
+          <button onClick={this.handleAnswerSubmit} className="btn-blue-white">
+            submit
+          </button>
+        </div>
       </React.Fragment>
     );
   }

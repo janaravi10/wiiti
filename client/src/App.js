@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { authSessAction, getUserData } from "./actions/loginAction";
+import { hideNotification } from "./actions/postAction";
 import { withRouter } from "react-router-dom";
 import Header from "./components/Header";
 import Wiitis from "./components/Wiitis";
@@ -15,12 +16,21 @@ class App extends Component {
     // getting the user data like email , token and storing in redux state
     this.props.getUserData();
   }
+
+  hideModal = () => {
+    // hiding the notification
+    if (this.props.showNotification) {
+      setTimeout(() => {
+        this.props.hideNotification();
+      }, 4000);
+    }
+  };
   alertModal = () => {
     if (this.props.showNotification) {
       return (
         <div className="error-modal">
           <p>{this.props.modalMessage}</p>
-          <div className="close-error" />
+          <div className="close-error" onClick={this.props.hideNotification} />
         </div>
       );
     }
@@ -42,6 +52,8 @@ class App extends Component {
         />
         {/* showing the alert box */}
         {this.alertModal()}
+        {/* hiding the notification */}
+        {this.hideModal()}
       </div>
     );
   }
@@ -55,7 +67,8 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = {
   authUser: authSessAction,
-  getUserData
+  getUserData,
+  hideNotification
 };
 
 export default withRouter(

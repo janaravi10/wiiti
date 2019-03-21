@@ -3,18 +3,23 @@ import "../css/answer.css";
 import logo from "../img/wiiti-image.jpg";
 import AnswerEditor from "./AnswerEditor";
 import { connect } from "react-redux";
-import { getAnswers, isAnswered, deleteAnswer} from "../actions/postAction";
+import { getAnswers, isAnswered, deleteAnswer } from "../actions/postAction";
 import "quill/dist/quill.snow.css";
 class Answer extends Component {
   state = {
     showModal: false
   };
   componentDidMount = () => {
-    this.props.getAnswers(this.props.questionId);
-    this.props.isAnswered(this.props.questionId, this.props.token);
+    const { getAnswers, questionId, isAnswered, token } = this.props;
+    getAnswers(questionId);
+    isAnswered(questionId, token);
   };
   handleAnswerDelete = () => {
-    this.props.deleteAnswer(this.props.questionId, this.props.token);
+    // handling the deletion of answers
+    const { deleteAnswer, questionId, userId, token } = this.props;
+    deleteAnswer(questionId, token, userId);
+    // removing the modal from the view 
+    this.setState({ showModal: false });
   };
   parseQuill = delta => {
     let quillDelta = delta.ops,
@@ -73,9 +78,13 @@ class Answer extends Component {
                 <div className="delete-wrapper">
                   <p>Do you really want to delete this answer?</p>
                   <button onClick={this.handleAnswerDelete}>yes</button>
-                  <button onClick={() => {
-                    this.setState({ showModal: false });
-                  }}>cancel</button>
+                  <button
+                    onClick={() => {
+                      this.setState({ showModal: false });
+                    }}
+                  >
+                    cancel
+                  </button>
                 </div>
               </div>
             )}
@@ -149,7 +158,8 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = {
   getAnswers,
-  isAnswered, deleteAnswer
+  isAnswered,
+  deleteAnswer
 };
 export default connect(
   mapStateToProps,

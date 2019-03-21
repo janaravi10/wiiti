@@ -8,9 +8,44 @@ import {
   ANSWERING_FAILED,
   ANSWERED,
   REMOVE_ANSWERS,
-  REMOVE_QUESTION
+  REMOVE_QUESTION,
+  HIDE_NOTIFICATION,
+  ADD_QUESTION
 } from "./actionTypes";
 import axios from "axios";
+export function addQuestion(token, formData) {
+  return dispatch => {
+    // sending the form data to the server;
+    axios({
+      url: "http://localhost:5000/api/new-question",
+      method: "POST",
+      data: formData,
+      headers: {
+        authorization: token,
+        Accept: "application/json",
+        "Content-Type": "multipart/form-data"
+      }
+    }).then(res => {
+      if (res.data.success) {
+        dispatch({
+          type: ADD_QUESTION,
+          payload: {
+            needQuestionLoad: true,
+            addedQuestionId: res.data.questionId
+          }
+        });
+      } else {
+        dispatch({
+          type: ADD_QUESTION,
+          payload: {
+            showNotification: true,
+            modalMessage: res.data.message
+          }
+        });
+      }
+    });
+  };
+}
 export function getQuestion(postId) {
   return dispatch => {
     const postUrl = "http://localhost:5000/api/question/" + postId;
@@ -109,6 +144,18 @@ export function writeAnswer(content) {
     });
   };
 }
+// Hide notification
+export function hideNotification() {
+  return dispatch => {
+    return dispatch({
+      type: HIDE_NOTIFICATION,
+      payload: {
+        showNotification: false,
+        modalMessage: ""
+      }
+    });
+  };
+}
 // send answer
 export function postAnswer(questionId, delta, token) {
   return dispatch => {
@@ -128,25 +175,29 @@ export function postAnswer(questionId, delta, token) {
       .then(res => {
         if (res.data.success) {
           return dispatch({
-            type: ANSWERED
+            type: ANSWERED,
+            payload: {
+              showNotification: true,
+              modalMessage: res.data.message,
+              answer: res.data.answer,
+              answered: true,
+              writeAnswer: false
+            }
           });
         } else {
           //will implement later
           return dispatch({
-            type: ANSWERING_FAILED
+            type: ANSWERING_FAILED,
+            showNotification: true,
+            modalMessage: res.data.message
           });
         }
       })
-      .catch(err => {
-        // will implement later
-        return dispatch({
-          type: ANSWERING_FAILED
-        });
-      });
+      .catch(err => {});
   };
 }
 // delete answer
-export function deleteAnswer(questionId, token) {
+export function deleteAnswer(questionId, token, userId) {
   return dispatch => {
     const answerUrl = "http://localhost:5000/api/answer/" + questionId;
     axios
@@ -158,10 +209,13 @@ export function deleteAnswer(questionId, token) {
       .then(res => {
         if (res.data.success) {
           return dispatch({
-            type: ANSWERED,
+            type: REMOVE_ANSWERS,
             payload: {
+              authorId: userId,
               showNotification: true,
-              modalMessage: res.data.message
+              modalMessage: res.data.message,
+              answered: false,
+              writeAnswer: false
             }
           });
         } else {

@@ -29,7 +29,7 @@ module.exports = function verifyToken(req, res, next) {
           res.json({
             success: false,
             statusCode: 401,
-            error: "Token Expired!"
+            error: "Token Expired!",message: "You are not logged in!"
           });
         });
       } else {
@@ -58,7 +58,7 @@ module.exports = function verifyToken(req, res, next) {
     res.json({
       success: false,
       statusCode: 401,
-      error: "Unauthorized user!"
+      error: "Unauthorized user!",message: "Unauthorized user!"
     });
   }
 };

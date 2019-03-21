@@ -1,7 +1,9 @@
 import React, { Component } from "react";
-import axios from "axios";
+import { withRouter } from "react-router-dom";
 import "../css/askImage.css";
 import { connect } from "react-redux";
+import { addQuestion } from "../actions/postAction";
+import { createBrowserHistory } from "history";
 class AskImage extends Component {
   state = {
     previewImages: [],
@@ -94,19 +96,7 @@ class AskImage extends Component {
     });
 
     let token = "bearer " + this.props.token;
-    // sending the form data to the server;
-    axios({
-      url: "http://localhost:5000/api/new-question",
-      method: "POST",
-      data: formData,
-      headers: {
-        authorization: token,
-        Accept: "application/json",
-        "Content-Type": "multipart/form-data"
-      }
-    }).then(res => {
-      console.log(res.data);
-    });
+    this.props.addQuestion(token, formData);
   };
 
   /*
@@ -164,6 +154,12 @@ class AskImage extends Component {
       return "";
     }
   };
+  //function load new question
+  loadNewQuestion = () => {
+    if (this.props.needQuestionLoad) {
+      this.props.history.push("/question/" + this.props.addedQuestionId);
+    }
+  };
   render() {
     return (
       <div className="question-overlay">
@@ -218,16 +214,25 @@ class AskImage extends Component {
             </button>
           </form>
         </div>
+        {/* Loading new question after user has successfully added the question */}
+        {this.loadNewQuestion()}
       </div>
     );
   }
 }
 const mapStateToProps = state => {
   return {
-    token: state.user.token
+    token: state.user.token,
+    needQuestionLoad: state.post.needQuestionLoad,
+    addedQuestionId: state.post.addedQuestionId
   };
 };
-export default connect(
-  mapStateToProps,
-  null
-)(AskImage);
+const mapDispatchToProps = {
+  addQuestion
+};
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(AskImage)
+);

@@ -97,19 +97,24 @@ module.exports = (app, db) => {
       imgUrls.push(baseUploadLocation + file.filename);
     });
     questionData.imgUrls = JSON.stringify(imgUrls);
-    console.log(questionData)
+    console.log(questionData);
     let sql = "INSERT INTO questions SET ?";
     // saving the data to the mongodb database;
-    db.query(sql, questionData, function(err, result) {
-      // sending the response
-      if (!err) {
+    db.queryAsync(sql, questionData)
+      .then(function(result) {
+        // sending the response
         res.send({
           success: true,
-          error: "Question uploaded Successfully!"
+          error: "Question uploaded Successfully!",
+          questionId: result.insertId
         });
-      } else {
-        res.send({ success: false, error: err.code });
-      }
-    });
+      })
+      .catch(err => {
+        res.send({
+          success: false,
+          error: err.code,
+          message: "Internal server error!"
+        });
+      });
   });
 };

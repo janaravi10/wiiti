@@ -1,4 +1,4 @@
-let NUM_QUESTION_COUNT = 10;
+let NUM_QUESTION_COUNT = 20;
 module.exports = (app, db) => {
   /*
    * Route for getting all posts

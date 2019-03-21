@@ -54,50 +54,70 @@ module.exports = (app, db) => {
       try {
         const isPost = await isPostAvailable(req.params.questionId);
         let alreadyAnswer = await isAnswered(req.params.questionId, req.userId),
-          sqlInsert = "INSERT INTO answers SET ?",
+          sqlInsert,
           data = {
             postId: req.params.questionId,
             authorId: req.userId,
             content: req.body.answerContent,
             answeredOn: Date.now()
-          };
+          },
+          questionId = req.params.questionId,
+          userId = req.userId;
         if (isPost) {
           if (alreadyAnswer === true) {
             sqlInsert =
               "UPDATE answers SET ?  WHERE postId = ? AND authorId = ?";
             data = { content: req.body.answerContent };
-            db.queryAsync(sqlInsert, [data, req.params.questionId, req.userId])
+            db.queryAsync(sqlInsert, [data, questionId, userId])
               .then(doc => {
-                res.send({
-                  success: true,
-                  error: "Answer updated",
-                  message: "Answer updated!"
-                });
+                sqlInsert =
+                  "SELECT * FROM answers WHERE postId = ? AND authorId = ?";
+                db.queryAsync(sqlInsert, [questionId, userId])
+                  .then(doc => {
+                    res.send({
+                      success: true,
+                      error: "Answer updated",
+                      message: "Answer updated!",
+                      answer: doc[0]
+                    });
+                  })
+                  .catch(err => {
+                    console.log(err);
+                  });
               })
               .catch(err => {
                 console.log(err);
                 res.send({
                   success: false,
                   error: "cannot update!",
-                  message: "Couln't update answer!"
+                  message: "Can't update answer!"
                 });
               });
           } else if (alreadyAnswer === false) {
             // inserting the answer into the database
+            sqlInsert = "INSERT INTO answers SET ?";
             db.queryAsync(sqlInsert, data)
               .then((doc, field) => {
-                res.send({
-                  success: true,
-                  answer: doc,
-                  message: "Answer submitted!"
-                });
+                sqlInsert =
+                  "SELECT * FROM answers WHERE id = ?";
+                db.queryAsync(sqlInsert, [doc.insertId])
+                  .then(ans => {
+                    res.send({
+                      success: true,
+                      answer: ans[0],
+                      message: "Answer submitted!",
+                    });
+                  })
+                  .catch(err => {
+                    console.log(err);
+                  });
               })
               .catch(err => {
                 console.log(err);
                 res.send({
                   success: false,
                   error: err.code,
-                  message: "Can't answer , Internel server error!"
+                  message: "Can't answer , Internl server error!"
                 });
               });
           }
