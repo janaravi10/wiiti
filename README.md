@@ -2,7 +2,7 @@
 A social app for anyone to clear their 
 doubt in any images
 
-##uses 
+## uses 
 React js 
 Node js 
 Mysql
